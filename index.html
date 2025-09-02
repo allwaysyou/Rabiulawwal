@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>12 रबीउल अव्वल मुबारक</title>
+<link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
+<style>
+body {margin:0; background:linear-gradient(120deg,#192a56,#273c75); font-family:'Lateef', Arial, serif; color:#fff;}
+.container {max-width:350px; margin:52px auto 22px; background:rgba(35,39,65,0.95); border-radius:18px; padding:36px 18px 21px; box-shadow:0 0 30px 10px #eec373;}
+label {font-size:1.08em; color:#facf70; font-family:'Lateef'; margin-bottom:7px; margin-top:12px; display:block;}
+input[type="text"] {width:96%; padding:8px; font-size:0.98em; border-radius:7px; border:none; background:#ffffe5; color:#493c14; margin-bottom:12px; font-family:'Lateef',cursive; box-shadow:0 0 7px #facf70;}
+.button-unique {width:96%; padding:12px; font-size:1.09em; font-family:'Lateef', Arial, sans-serif; background:linear-gradient(90deg,#facf70,#eec373 65%, #f7e596); color:#192a56; border:none; border-radius:11px; box-shadow:0 4px #f7e596; font-weight:bold; margin-top:7px; margin-bottom:5px;}
+.share-btn {width:96%; padding:10px; font-size:1em; border-radius:9px; background:#97d4e6; color:#273c75; border:none; font-family:'Lateef', Arial, sans-serif; margin-bottom: 5px;}
+#message {margin-top:16px; font-size:1.26em; font-family:'Lateef',cursive; background:rgba(239,230,185,0.12); padding:17px 8px; border-radius:14px; box-shadow:0 0 11px #eec373; color:#ffeaa7; white-space:pre-wrap; text-align:center; min-height:110px;}
+.name-big {font-size:1.24em; font-weight:bold; color:#fffae6;}
+@media(max-width:440px){ .container{max-width:98vw;padding:8vw 2vw;} }
+.play-btn {
+  width:96%; padding:12px; font-size:1.07em; border-radius:11px;
+  background:linear-gradient(90deg,#facf70,#eec373,#f7e596);
+  color:#273c75; border:none; font-family:'Lateef', Arial, sans-serif;
+  margin:23px auto 13px; display:block; box-shadow:0 3px #eec373; font-weight:bold; cursor:pointer;
+}
+.tip {
+  text-align:center;
+  font-size:1em;
+  color:#ffeaa7;
+  margin-top:17px;
+  margin-bottom:5px;
+}
+</style>
+</head>
+<body>
+<div id="ytplayer"></div>
+<div class="tip">अगर म्यूज़िक ऑटो-प्ले नहीं होता, नीचे "सांग चलाएं" बटन दबाएँ</div>
+<button id="playBtn" class="play-btn">🎵 सांग चलाएं</button>
+
+<div class="container">
+    <label for="friendName">दोस्त का नाम:</label>
+    <input type="text" id="friendName" maxlength="20" placeholder="नाम लिखें..." />
+    <label for="yourName">अपना नाम:</label>
+    <input type="text" id="yourName" maxlength="20" placeholder="अपना नाम..." />
+    <button class="button-unique" onclick="showGreeting()">मुबारकबाद भेजें</button>
+    <button class="share-btn" onclick="shareGreeting()">शेयर करें</button>
+    <div id="message"></div>
+</div>
+
+<script>
+// YouTube Shorts music logic with button and autoplay
+function loadYTMusic() {
+  document.getElementById('ytplayer').innerHTML =
+    `<iframe width="0" height="0"
+      src="https://www.youtube.com/embed/rcB43UhNJSE?autoplay=1&playlist=rcB43UhNJSE&loop=1"
+      frameborder="0" allow="autoplay"></iframe>`;
+  document.getElementById('playBtn').style.display = "none";
+}
+// Try auto-play on load
+window.addEventListener('DOMContentLoaded', function() {
+  loadYTMusic();
+});
+// If autoplay is blocked, allow user to play manually
+document.getElementById('playBtn').addEventListener('click', loadYTMusic);
+
+// Islamic greeting logic
+const greetingsList = [
+`अज़ीज़ <span class='name-big'>#N1</span>,  
+रौशनियाँ, बरकतें और रहमतें हो 12 रबीउल अव्वल के मुबारक मौके पर!  
+आपकी ज़िन्दगी मश्कुर-ए-नबी की खुशबू से गुलज़ार रहे।  
+  
+- दुआगो <span class='name-big'>#N2</span>`,
+
+`मेहरबान <span class='name-big'>#N1</span>,  
+12 रबीउल अव्वल का मुबारक दिन, आपके क़दमों में फैयाज़ी लाए,  
+रहमत-ए-इलाही से दिल की दुनिया रौशन हो जाए।  
+  
+- आपकी तरफ़ से <span class='name-big'>#N2</span>`,
+
+`मोहतरम <span class='name-big'>#N1</span>,  
+रौशन दिल, पाक नीयत और रहमत का जश्न मुबारक!  
+नबी-ए-अकरम ﷺ की सुम्बुली महक आपके इर्द-गिर्द फैली रहे।  
+  
+- मुबारिकबादी पेश करते हैं <span class='name-big'>#N2</span>`
+];
+
+let lastGreeting = "";
+
+// URL से दोस्त और भेजने वाले का नाम निकालना
+function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name) || '';
+}
+// पेज लोड पर अगर query हुआ तो auto-fill व auto-message
+window.onload = function() {
+    const friend = getQueryParam('friend');
+    const sender = getQueryParam('sender');
+    if (friend && sender) {
+      document.getElementById('friendName').value = friend;
+      document.getElementById('yourName').value = sender;
+      showGreeting(true);
+    }
+}
+// showGreeting; अब autoMode ऑप्शन के लिए
+function showGreeting(autoMode=false) {
+  const friend = document.getElementById('friendName').value.trim();
+  const sender = document.getElementById('yourName').value.trim();
+  const messageBox = document.getElementById('message');
+  if (friend === '' || sender === '') { 
+      if(!autoMode) alert("दोनों नाम भरें."); 
+      return;
+  }
+  let g = greetingsList[Math.floor(Math.random()*greetingsList.length)];
+  g = g.replace(/#N1/g,friend).replace(/#N2/g,sender);
+  messageBox.innerHTML = g;
+  lastGreeting = g.replace(/<span.?>(.?)<\/span>/g, '$1');
+}
+// शेयर बटन
+function shareGreeting() {
+  if(!lastGreeting){ alert('पहले मुबारकबाद जनरेट करें!'); return; }
+  let url = window.location.origin + window.location.pathname + '?friend=' +
+    encodeURIComponent(document.getElementById('friendName').value.trim()) +
+    '&sender=' +
+    encodeURIComponent(document.getElementById('yourName').value.trim());
+  // शेयर फीचर
+  if(navigator.share){
+    navigator.share({
+      title:"12 रबीउल अव्वल मुबारक",
+      text:lastGreeting+"\n\n👉 "+url
+    });
+  } else {
+    alert('यह फ़ीचर मोबाइल में (Chrome/Safari/Edge) ही है। Shayari/Link कॉपी कर के मैन्युअली भेजें:\n'+url);
+  }
+}
+</script>
+</body>
+</html>
